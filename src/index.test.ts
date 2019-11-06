@@ -1,14 +1,19 @@
-import SocialNetworkClient, { Terminal } from "./index";
+import SocialNetworkClient, { Terminal, UserInterface, MessageInterface } from "./index";
+import { User } from "./User";
+import { Message } from "./Message";
 const consoleReading = (input: string) => ({
   readLine() {
+    return input;
+  },
+
+  println(input: string) {
     return input;
   }
 });
 
 describe("Testing Social Network Kata", () => {
-  describe("Testing the User", () => {
-    it("should publish a message on the timeline", () => {
-      const lines = [];
+
+  const lines = [];
 
       const output = {
         println(line: string) {
@@ -16,15 +21,32 @@ describe("Testing Social Network Kata", () => {
           lines.push(line);
         }
       };
-      const client = new SocialNetworkClient(output);
 
-      let input: Terminal = consoleReading("post (0s ago): Hello World!");
+  describe("Testing the User", () => {
+    it("should publish a message on the timeline", () => {
+      
+      let user = new User("Alice");
+      const client = new SocialNetworkClient(output, user);
+
+      let input: Terminal = consoleReading("post Hello World!");
 
       client.process(input);
 
-      client.process(consoleReading("timeline"));
-
-      expect(lines).toContain("Alice (0s ago): Hello World!");
+      expect(client.showTimeline(input)).toContain("Alice (0s ago): Hello World!");
     });
   });
+
+  describe("should show user timeline", () => {
+
+    let user = new User("Alice");
+      const client = new SocialNetworkClient(output, user);
+      let message = new Message(" (0s ago): ", "Hello World!");
+      client.user.timeline.push(message);
+      let input: Terminal = consoleReading("timeline");
+
+      client.process(input);
+
+      expect(client.showTimeline(input)).toContain("Alice (0s ago): Hello World!");
+  });
+
 });
