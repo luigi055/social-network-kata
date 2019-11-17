@@ -15,10 +15,10 @@ describe("Testing Social Network Kata", () => {
     lines = [];
     output = {
       cache: lines,
-      printLn(line: string) {
+      writeLine(line: string) {
         lines.push(line);
       },
-      readLine: jest.fn()
+      println: jest.fn()
     };
   });
 
@@ -40,9 +40,7 @@ describe("Testing Social Network Kata", () => {
      */
     aliceClient.process(consoleReading("timeline"));
 
-    expect(output.readLine).toHaveBeenCalledWith(
-      "Alice (0s ago): Hello World!"
-    );
+    expect(output.println).toHaveBeenCalledWith("Alice (0s ago): Hello World!");
   });
 
   it("should read the Alice's timeline when Bob ask for her timeline", () => {
@@ -68,7 +66,7 @@ describe("Testing Social Network Kata", () => {
      */
     bobClient.process(consoleReading("read timeline Alice"));
 
-    expect(output.readLine).toHaveBeenCalledWith(
+    expect(output.println).toHaveBeenCalledWith(
       "Alice (0s ago): Hello World for Bob!"
     );
   });
@@ -107,7 +105,7 @@ describe("Testing Social Network Kata", () => {
      * Then Charly receives a list of all users he follows
      */
 
-    expect(output.readLine).toHaveBeenCalledWith("Alice");
-    expect(output.readLine).toHaveBeenCalledWith("Bob");
+    expect(output.println).toHaveBeenCalledWith("Alice");
+    expect(output.println).toHaveBeenCalledWith("Bob");
   });
 });

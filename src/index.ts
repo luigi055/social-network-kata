@@ -10,9 +10,11 @@ class SocialNetworkClient {
   constructor(private user: UserInterface, private output: Output) {}
 
   private parseCommand(terminal: Terminal): string {
-    return Object.keys(commandDictionary).find(command =>
+    const commandUsed = Object.keys(commandDictionary).find(command =>
       terminal.readLine().startsWith(command)
     );
+
+    return commandUsed;
   }
 
   process(terminal: Terminal) {

@@ -32,7 +32,7 @@ class PostCommand {
   constructor(private user: UserInterface, private output: Output) {}
 
   execute(terminal: Terminal) {
-    this.output.printLn(
+    this.output.writeLine(
       `${this.user.name} (${"0s ago"}): ${terminal
         .readLine()
         .replace("post ", "")}`
@@ -49,7 +49,7 @@ class ReadTimeLineCommand {
       command.endsWith(command.split(" ")[2])
     );
     for (let message of readTimeline) {
-      this.output.readLine(message);
+      this.output.println(message);
     }
   }
 }
@@ -62,7 +62,7 @@ class PersonalTimeline {
       message.startsWith(this.user.name)
     );
     for (let message of readTimeline) {
-      this.output.readLine(message);
+      this.output.println(message);
     }
   }
 }
@@ -76,7 +76,7 @@ class FollowUser {
 
     followingUsers.push(new User(userName));
 
-    this.output.readLine(`You're now following to ${userName}`);
+    this.output.println(`You're now following to ${userName}`);
   }
 }
 
@@ -85,7 +85,7 @@ class GetFollowingUsers {
 
   execute(terminal: Terminal, followingUsers?: UserInterface[]) {
     for (const user of followingUsers) {
-      this.output.readLine(user.name);
+      this.output.println(user.name);
     }
   }
 }
