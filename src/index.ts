@@ -1,30 +1,29 @@
-interface Output {
-  println(line: string): void;
+import { UserInterface, Output, Terminal } from "./interfaces/index";
+import CommandsFactory, { commandDictionary } from "./commands";
+
+export class User implements UserInterface {
+  constructor(public name: string = "") {}
 }
 
-export interface Terminal {
-  readLine(): string;
-}
+class SocialNetworkClient {
+  private following: User[] = [];
+  constructor(private user: UserInterface, private output: Output) {}
 
-export default class SocialNetworkClient {
-  constructor(private output: Output) {}
-  private storage: string[] = [];
+  private parseCommand(terminal: Terminal): string {
+    return Object.keys(commandDictionary).find(command =>
+      terminal.readLine().startsWith(command)
+    );
+  }
 
-  public process(terminal: Terminal): void {
-    const command = terminal.readLine();
-    const isCommandStartingWith = (commandLine: string) =>
-      command.startsWith(commandLine);
+  process(terminal: Terminal) {
+    const command = this.parseCommand(terminal);
+    const commands = new CommandsFactory().handleCommand(
+      this.user,
+      this.output
+    );
 
-    if (isCommandStartingWith("post")) {
-      this.storage.push(command.replace("post", "Alice"));
-    } else if (isCommandStartingWith("timeline")) {
-      const messageFilteredByUserName = this.storage.filter(message =>
-        message.startsWith("Alice")
-      );
-
-      messageFilteredByUserName.forEach(message => {
-        this.output.println(message);
-      });
-    }
+    commands[command].execute(terminal, this.following);
   }
 }
+
+export default SocialNetworkClient;
