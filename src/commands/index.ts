@@ -5,7 +5,8 @@ import {
   READ_TIMELINE,
   TIMELINE,
   FOLLOW,
-  GET_FOLLOWING
+  GET_FOLLOWING,
+  MENTION_ME
 } from "./constants";
 
 export const commandDictionary = {
@@ -13,7 +14,8 @@ export const commandDictionary = {
   [READ_TIMELINE]: READ_TIMELINE,
   [TIMELINE]: TIMELINE,
   [FOLLOW]: FOLLOW,
-  [GET_FOLLOWING]: GET_FOLLOWING
+  [GET_FOLLOWING]: GET_FOLLOWING,
+  [MENTION_ME]: MENTION_ME
 };
 
 export default class CommandsFactory {
@@ -23,7 +25,8 @@ export default class CommandsFactory {
       [READ_TIMELINE]: new ReadTimeLineCommand(user, output),
       [TIMELINE]: new PersonalTimeline(user, output),
       [FOLLOW]: new FollowUser(output),
-      [GET_FOLLOWING]: new GetFollowingUsers(output)
+      [GET_FOLLOWING]: new GetFollowingUsers(output),
+      [MENTION_ME]: new Mentions(user, output)
     };
   }
 }
@@ -86,6 +89,20 @@ class GetFollowingUsers {
   execute(terminal: Terminal, followingUsers?: UserInterface[]) {
     for (const user of followingUsers) {
       this.output.println(user.name);
+    }
+  }
+}
+
+class Mentions {
+  constructor(private user: UserInterface, private output: Output) {}
+
+  execute() {
+    const mentionedMessages = this.output.cache.filter(message =>
+      message.match(`@${this.user.name}`)
+    );
+
+    for (const message of mentionedMessages) {
+      this.output.println(message);
     }
   }
 }

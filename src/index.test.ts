@@ -108,4 +108,46 @@ describe("Testing Social Network Kata", () => {
     expect(output.println).toHaveBeenCalledWith("Alice");
     expect(output.println).toHaveBeenCalledWith("Bob");
   });
+
+  it("should show all timeline who charly is mentioned", () => {
+    /**
+     * Given the Charly initialize the command line interface and start the social network
+     * And Alice and Bob have some messages in her timeline
+     */
+
+    const alice = new User("Alice");
+    const aliceClient = new SocialNetworkClient(alice, output);
+
+    const bob = new User("Bob");
+    const bobClient = new SocialNetworkClient(bob, output);
+
+    const charly = new User("Charly");
+    const charlyClient = new SocialNetworkClient(charly, output);
+
+    aliceClient.process(consoleReading("post Hello I'm Alice! "));
+
+    aliceClient.process(consoleReading("post Hello, @Charly is my cousin"));
+
+    bobClient.process(
+      consoleReading("post Hello I'm Bob, this is my friend @Charly")
+    );
+
+    /**
+     * When charly wants to read all the timeline where he is mentioned
+     */
+    charlyClient.process(consoleReading("mentions"));
+
+    /**
+     * Then Charly receives a list of all the timeline who mention him
+     */
+
+    expect(output.println).toHaveBeenCalledWith(
+      "Alice (0s ago): Hello, @Charly is my cousin"
+    );
+    expect(output.println).toHaveBeenCalledWith(
+      "Bob (0s ago): Hello I'm Bob, this is my friend @Charly"
+    );
+
+    expect(output.println).toBeCalledTimes(2);
+  });
 });
